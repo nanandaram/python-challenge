@@ -1,0 +1,48 @@
+import csv
+
+file_budget = "data/budget_data.csv"
+file_output = "analysis/budget_ananlysis.txt"
+
+totalMonths = 0
+prevRevenue = 0
+changeInMonth = []
+prevMonth = ""
+revenueChange = []
+greatesIncrease = ["", 0]
+greatesDecrease = ["", 0]
+totalRevenue = 0
+
+
+with open (file_budget) as budgetdata:
+	reader = csv.DictReader(budgetdata)
+	
+	for row in reader:
+		totalMonths = totalMonths +1 
+		totalRevenue = totalRevenue + int( row["Profit/Losses"])
+		rc = float(row["Profit/Losses"])- prevRevenue
+		prevRevenue = int( row["Profit/Losses"])
+		revenueChange = revenueChange + [rc]
+		changeInMonth =changeInMonth + [row["Date"]]
+		
+		
+		if( rc > float(greatesIncrease[1])):
+			greatesIncrease[0]=row["Date"]	
+			greatesIncrease[1] = rc
+		if(rc < float(greatesDecrease[1])):
+			greatesDecrease[0] = row["Date"]
+			greatesDecrease[1] = rc
+		prevMonth = row["Date"]
+averageRevenue  = sum( revenueChange)/len( revenueChange)
+printstatement = (f" \n Financial analysis )\n"
+				  f"----------------------------------\n"
+				  f"Total Months : {totalMonths}\n"
+				  f"Total revenue : {totalRevenue}\n"
+				  f"Avereage change in revenue : {averageRevenue}\n"
+				  f"Greates increase in revenue : {greatesIncrease[0]} ${greatesIncrease[1]}\n"
+				  f"Greates decrease in revenue : {greatesDecrease[0]}$ {greatesDecrease[1]}\n"
+				)
+print(printstatement )
+
+txt_file=  open( file_output , "w") 
+txt_file.write( printstatement)
+

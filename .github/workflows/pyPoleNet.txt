@@ -1,0 +1,50 @@
+import csv
+
+file_vote = "data/election_data.csv"
+file_output = "analysis/election_ananlysis.txt"
+totalVotes = 0 
+
+Candidates=[]
+votesPerCandidate= {}
+winner =""
+popularVote = 0
+
+with open( file_vote) as eData :
+    reader = csv.DictReader( eData)
+    for row in reader:
+        
+        candidateName = row["Candidate"]
+        #print( "Candidate = " + candidateName)
+        #print( Candidates)
+        totalVotes = totalVotes + 1
+        if  candidateName not in Candidates:
+            Candidates.append(candidateName)
+            votesPerCandidate[candidateName]=0
+        else:
+            votesPerCandidate[candidateName] = votesPerCandidate[candidateName] + 1
+
+
+outString = ( f"Election Results\n"
+              f"-------------------------\n"
+              f"Total Votes: {totalVotes}\n"
+            )
+winner = ""
+prevVote =0
+for candidateName in votesPerCandidate:
+    candidateVotes = votesPerCandidate[candidateName]
+    outString= outString + ( f" {candidateName}: {candidateVotes /totalVotes * 100}% ({candidateVotes} )\n")
+    if candidateVotes > prevVote:
+        winner = candidateName
+        prevVote = candidateVotes
+    
+outString = outString + (f" ---------------------------\n"
+                        f" Winner : {winner }\n"
+                        f"------------------------------\n")
+
+print(outString )     
+
+txt_file=  open( file_output , "w") 
+txt_file.write( outString)
+
+
+
